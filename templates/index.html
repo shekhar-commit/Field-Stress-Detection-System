@@ -1,0 +1,454 @@
+{% extends "base.html" %} {% block title %}Field Stress Detection{% endblock %} {% block content %}
+<style>
+    * {
+        box-sizing: border-box;
+    }
+    
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #dff6dd, #b8e8c8, #d8f3dc);
+        min-height: 100vh;
+    }
+    
+    .hero {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .hero h1 {
+        font-size: 2.8rem;
+        color: #1b5e20;
+        margin-bottom: 10px;
+        font-weight: 800;
+    }
+    
+    .hero p {
+        color: #2f4f2f;
+        font-size: 1.05rem;
+        max-width: 900px;
+        margin: auto;
+        line-height: 1.7;
+    }
+    
+    .top-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+        margin-bottom: 28px;
+    }
+    
+    .badge {
+        background: rgba(67, 160, 71, 0.1);
+        color: #1b5e20;
+        padding: 10px 16px;
+        border-radius: 999px;
+        font-size: 0.92rem;
+        font-weight: 600;
+        border: 1px solid rgba(67, 160, 71, 0.15);
+    }
+    
+    .main-card {
+        max-width: 1400px;
+        margin: auto;
+        background: rgba(255, 255, 255, 0.82);
+        backdrop-filter: blur(12px);
+        border-radius: 28px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+        padding: 35px 28px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    .section-card {
+        background: #ffffff;
+        border-radius: 22px;
+        padding: 24px 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+        border: 1px solid #eef5ee;
+    }
+    
+    .form-section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1b5e20;
+        margin-bottom: 18px;
+        padding-left: 10px;
+        border-left: 5px solid #43a047;
+    }
+    
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+    
+    .input-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .input-group label {
+        font-size: 0.92rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #2e5d34;
+    }
+    
+    .form-grid input,
+    .form-grid select {
+        padding: 14px 14px;
+        border: 1.8px solid #d8e7d8;
+        border-radius: 14px;
+        font-size: 15px;
+        background: #f9fffa;
+        transition: all 0.25s ease;
+        outline: none;
+    }
+    
+    .form-grid input:focus,
+    .form-grid select:focus {
+        border-color: #43a047;
+        box-shadow: 0 0 0 4px rgba(67, 160, 71, 0.12);
+        background: #ffffff;
+        transform: translateY(-1px);
+    }
+    
+    .submit-wrap {
+        text-align: center;
+        margin-top: 28px;
+    }
+    
+    .predict-btn {
+        background: linear-gradient(135deg, #2e7d32, #43a047);
+        color: white;
+        border: none;
+        padding: 16px 34px;
+        border-radius: 18px;
+        font-size: 1.08rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 10px 25px rgba(46, 125, 50, 0.25);
+    }
+    
+    .predict-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 30px rgba(46, 125, 50, 0.35);
+    }
+    
+    .footer-note {
+        text-align: center;
+        margin-top: 20px;
+        color: #5a6b5d;
+        font-size: 0.95rem;
+    }
+    
+    @media (max-width: 1100px) {
+        .form-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @media (max-width: 700px) {
+        .main-card {
+            padding: 22px 14px;
+            border-radius: 18px;
+        }
+        .hero h1 {
+            font-size: 2rem;
+        }
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+        .section-card {
+            padding: 18px 14px;
+        }
+    }
+</style>
+
+<div class="hero">
+    <h1>🌾 Field Stress Detection System</h1>
+    <p>
+        AI-powered smart farming tool to detect dry zones, risky zones, overwatered areas, nutrient deficiency, crop stress, and irrigation demand based on environmental, soil, and crop-related parameters.
+    </p>
+</div>
+
+<div class="top-badges">
+    <div class="badge">💧 Irrigation Insight</div>
+    <div class="badge">🌱 Crop Health Analysis</div>
+    <div class="badge">🛰️ Zone Stress Prediction</div>
+    <div class="badge">📊 Smart Farming Decision Support</div>
+</div>
+
+<div class="main-card">
+    <form action="/predict" method="POST">
+
+        <!-- SECTION 1 -->
+        <div class="section-card">
+            <div class="form-section-title">📍 Zone & Crop Details</div>
+            <div class="form-grid">
+
+                <div class="input-group">
+                    <label>Zone Row</label>
+                    <input type="number" name="zone_row" placeholder="e.g. 0" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Zone Column</label>
+                    <input type="number" name="zone_col" placeholder="e.g. 1" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Zone Position</label>
+                    <select name="zone_position" required>
+                        <option value="">Select</option>
+                        <option value="corner">Corner</option>
+                        <option value="edge">Edge</option>
+                        <option value="center">Center</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Crop Type</label>
+                    <select name="crop_type" required>
+                        <option value="">Select Crop</option>
+                        <option value="tomato">Tomato</option>
+                        <option value="wheat">Wheat</option>
+                        <option value="rice">Rice</option>
+                        <option value="maize">Maize</option>
+                        <option value="potato">Potato</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Crop Age (Days)</label>
+                    <input type="number" name="crop_age_days" placeholder="e.g. 45" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Crop Stage</label>
+                    <select name="crop_stage" required>
+                        <option value="">Select Stage</option>
+                        <option value="germination">Germination</option>
+                        <option value="vegetative">Vegetative</option>
+                        <option value="flowering">Flowering</option>
+                        <option value="fruiting">Fruiting</option>
+                        <option value="maturity">Maturity</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SECTION 2 -->
+        <div class="section-card">
+            <div class="form-section-title">🌍 Soil & Environmental Data</div>
+            <div class="form-grid">
+
+                <div class="input-group">
+                    <label>Soil Type</label>
+                    <select name="soil_type" required>
+                        <option value="">Select Soil</option>
+                        <option value="sandy">Sandy</option>
+                        <option value="loamy">Loamy</option>
+                        <option value="clayey">Clayey</option>
+                        <option value="silty">Silty</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Soil Moisture (%)</label>
+                    <input type="number" step="0.01" name="soil_moisture" placeholder="e.g. 23.5" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Soil Temperature (°C)</label>
+                    <input type="number" step="0.01" name="soil_temperature_c" placeholder="e.g. 28.4" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Drainage Condition</label>
+                    <select name="drainage_condition" required>
+                        <option value="">Select</option>
+                        <option value="poor">Poor</option>
+                        <option value="moderate">Moderate</option>
+                        <option value="good">Good</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Mulching</label>
+                    <select name="mulching" required>
+                        <option value="">Select</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Temperature (°C)</label>
+                    <input type="number" step="0.01" name="temperature_c" placeholder="e.g. 35.2" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Humidity (%)</label>
+                    <input type="number" step="0.01" name="humidity_percent" placeholder="e.g. 46.7" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Rainfall Last 24h (mm)</label>
+                    <input type="number" step="0.01" name="rainfall_last_24h_mm" placeholder="e.g. 2.5" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Rain Probability Next 24h (%)</label>
+                    <input type="number" step="0.01" name="rain_probability_next_24h" placeholder="e.g. 40" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Wind Speed (kmph)</label>
+                    <input type="number" step="0.01" name="wind_speed_kmph" placeholder="e.g. 8.2" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Sunlight Hours</label>
+                    <input type="number" step="0.01" name="sunlight_hours" placeholder="e.g. 7.5" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Evapotranspiration (mm/day)</label>
+                    <input type="number" step="0.01" name="evapotranspiration_mm_day" placeholder="e.g. 5.2" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Weather Condition</label>
+                    <select name="weather_condition" required>
+                        <option value="">Select</option>
+                        <option value="sunny">Sunny</option>
+                        <option value="cloudy">Cloudy</option>
+                        <option value="rainy">Rainy</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SECTION 3 -->
+        <div class="section-card">
+            <div class="form-section-title">💧 Irrigation, Nutrient & Risk Inputs</div>
+            <div class="form-grid">
+
+                <div class="input-group">
+                    <label>Last Irrigation Days</label>
+                    <input type="number" name="last_irrigation_days" placeholder="e.g. 3" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Irrigation Method</label>
+                    <select name="irrigation_method" required>
+                        <option value="">Select</option>
+                        <option value="drip">Drip</option>
+                        <option value="sprinkler">Sprinkler</option>
+                        <option value="flood">Flood</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Crop Water Requirement (mm)</label>
+                    <input type="number" step="0.01" name="crop_water_requirement_mm" placeholder="e.g. 8.5" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Fertilizer Level</label>
+                    <input type="number" step="0.01" name="fertilizer_level" placeholder="e.g. 65" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Field Slope</label>
+                    <select name="field_slope" required>
+                        <option value="">Select</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>NDVI Score</label>
+                    <input type="number" step="0.01" name="ndvi_score" placeholder="e.g. 0.62" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Disease Risk Score</label>
+                    <input type="number" step="0.01" name="disease_risk_score" placeholder="e.g. 0.35" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Fertilizer Deficiency Score</label>
+                    <input type="number" step="0.01" name="fertilizer_deficiency_score" placeholder="e.g. 0.40" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Irrigation Score</label>
+                    <input type="number" step="0.01" name="irrigation_score" placeholder="e.g. 0.81" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Waterlogging Risk</label>
+                    <select name="waterlogging_risk" required>
+                        <option value="">Select</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Waterlogging Score</label>
+                    <input type="number" step="0.01" name="waterlogging_score" placeholder="e.g. 0.15" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Irrigation Needed Zone</label>
+                    <select name="irrigation_needed_zone" required>
+                        <option value="">Select</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Fertilizer Needed Zone</label>
+                    <select name="fertilizer_needed_zone" required>
+                        <option value="">Select</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Disease Risk Zone</label>
+                    <select name="disease_risk_zone" required>
+                        <option value="">Select</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="submit-wrap">
+            <button type="submit" class="predict-btn">🔍 Predict Zone Stress</button>
+        </div>
+
+        <div class="footer-note">
+            AI-powered field intelligence for smarter farming decisions 🌱
+        </div>
+
+    </form>
+</div>
+{% endblock %}
